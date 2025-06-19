@@ -8,16 +8,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (tokenMatch) {
       const token = tokenMatch[1];
 
-      // Сохраняем токен
       chrome.storage.local.set({ vkToken: token }, () => {
         console.log("VK токен сохранён:", token);
 
-        // Можно отправить сообщение во все вкладки расширения (например, popup)
         chrome.runtime.sendMessage({ type: "vkTokenSaved", token });
 
-        // Закрываем вкладку с oauth.vk.com, если нужно
         chrome.tabs.remove(tabId);
       });
     }
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "getToken") {
+    chrome.storage.local.get(["vkToken"], (result) => {
+      sendResponse({ token: result.vkToken || null });
+    });
+    return true;
   }
 });
