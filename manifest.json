@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "VK Photo Editor",
+  "version": "1.0",
+  "description": "Adds a button to edit photos on VK",
+  "permissions": [
+    "activeTab",
+    "cookies",
+    "storage",
+    "tabs",
+    "scripting",
+    "https://vk.com/*", 
+    "https://*.vk.com/*",
+    "https://oauth.vk.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://vk.com/*",  "https://*.vk.com/*"], 
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "icons": {
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  }
+}
