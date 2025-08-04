@@ -11,19 +11,22 @@
     "scripting",
     "https://vk.com/*", 
     "https://*.vk.com/*",
-    "https://oauth.vk.com/*"
+    "https://oauth.vk.com/*",
+    "https://vk.ru/*", 
+    "https://*.vk.ru/*",
+    "https://oauth.vk.ru/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background/background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://vk.com/*",  "https://*.vk.com/*"], 
-      "js": ["content.js"]
+      "matches": ["https://vk.com/*",  "https://*.vk.com/*", "https://vk.ru/*",  "https://*.vk.ru/*"], 
+      "js": ["content/ui.js", "content/content.js"]
     }
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup/popup.html",
     "default_icon": {
       "32": "images/icon32.png",
       "48": "images/icon48.png",

@@ -31,53 +31,63 @@
     });
   }
 
-  function showUploadDialog(token) {
-    document.getElementById("vk-upload-dialog")?.remove();
+ function showUploadDialog(token) {
+  document.getElementById("vk-upload-dialog")?.remove();
+  document.getElementById("vk-upload-overlay")?.remove();
 
-    const modal = document.createElement("div");
-    modal.id = "vk-upload-dialog";
-    modal.style.position = "fixed";
-    modal.style.top = "50%";
-    modal.style.left = "50%";
-    modal.style.transform = "translate(-50%, -50%)";
-    modal.style.zIndex = "10000";
-    modal.style.backgroundColor = "#fff";
-    modal.style.border = "1px solid #ccc";
-    modal.style.padding = "20px";
-    modal.style.boxShadow = "0 2px 10px rgba(0,0,0,0.3)";
-    modal.innerHTML = `
-      <h3>Выберите изображение</h3>
-      <input type="file" accept="image/*" id="vk-photo-input" />
-      <br><br>
-      <button id="vk-upload-btn">Загрузить</button>
-      <button id="vk-cancel-btn" style="margin-left: 10px;">Отмена</button>
-    `;
-    document.body.appendChild(modal);
+  const overlay = document.createElement("div");
+  overlay.id = "vk-upload-overlay";
+  overlay.style = `
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9998;
+  `;
+  document.body.appendChild(overlay);
 
-    document.getElementById("vk-upload-btn").addEventListener("click", async () => {
-      const fileInput = document.getElementById("vk-photo-input");
-      const file = fileInput?.files[0];
-      if (!file) return alert("⚠️ Выберите изображение.");
+  const modal = document.createElement("div");
+  modal.id = "vk-upload-dialog";
+  modal.innerHTML = uploadDialogHTML;
+  document.body.appendChild(modal);
 
-      try {
-        const photoId = extractPhotoIdFromUrl();
-        if (!photoId) throw new Error("Не удалось извлечь photo_id из URL");
+  const style = document.createElement("style");
+  style.textContent = uploadDialogCSS;
+  document.head.appendChild(style);
 
-        const uploadUrl = await getUploadUrl(token);
-        const uploadData = await uploadImage(uploadUrl, file);
-        const result = await savePhotoEditor(token, photoId, uploadData);
+  const closeModal = () => {
+    modal.remove();
+    overlay.remove();
+  };
 
-        alert("✅ Фото успешно обновлено!");
-        modal.remove();
-      } catch (err) {
-        alert("❌ Ошибка: " + err.message);
-      }
-    });
+  document.querySelector(".vk-upload-close-btn").onclick = closeModal;
+  document.getElementById("vk-cancel-btn").onclick = closeModal;
 
-    document.getElementById("vk-cancel-btn").addEventListener("click", () => {
-      modal.remove();
-    });
-  }
+  document.getElementById("vk-upload-btn").addEventListener("click", async () => {
+    const fileInput = document.getElementById("vk-photo-input");
+    const file = fileInput?.files[0];
+    if (!file) return alert("⚠️ Выберите изображение.");
+
+    try {
+      document.querySelector(".vk-loading").style.display = "flex";
+
+      const photoId = extractPhotoIdFromUrl();
+      if (!photoId) throw new Error("Не удалось извлечь photo_id из URL");
+
+      const uploadUrl = await getUploadUrl(token);
+      const uploadData = await uploadImage(uploadUrl, file);
+      await savePhotoEditor(token, photoId, uploadData);
+
+      alert("✅ Фото успешно обновлено!");
+      closeModal();
+      location.reload();
+    } catch (err) {
+      alert("❌ Ошибка: " + err.message);
+      document.querySelector(".vk-loading").style.display = "none";
+    }
+  });
+ }
 
   function extractPhotoIdFromUrl() {
     const match = window.location.href.match(/photo(\d+_\d+)/);
@@ -125,4 +135,4 @@
     if (isPhotoPage) addEditPhotoButton();
   });
   observer.observe(document.body, { childList: true, subtree: true });
-})();
+ })();
