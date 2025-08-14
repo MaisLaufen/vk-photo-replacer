@@ -3,16 +3,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearBtn = document.getElementById("clear");
   const statusText = document.getElementById("status");
 
-  // Проверка токена при открытии popup
-  chrome.storage.local.get(["vkToken"], (result) => {
-    if (result.vkToken) {
-      statusText.textContent = "Token saved";
-    } else {
-      statusText.textContent = "No token";
-    }
-  });
+  function updateTokenStatus() {
+    chrome.storage.local.get(["vkToken"], (result) => {
+      if (result.vkToken) {
+        statusText.textContent = "✅ Токен получен";
+        statusText.className = "status-ok";
+        clearBtn.disabled = false;
+      } else {
+        statusText.textContent = "❌ Токен отсутствует";
+        statusText.className = "status-error";
+        clearBtn.disabled = true;
+      }
+    });
+  }
 
-  // Авторизация
+  updateTokenStatus();
+
   authBtn.addEventListener("click", () => {
     const clientId = "6287487";
     const redirectUri = "https://oauth.vk.com/blank.html";
@@ -22,10 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.tabs.create({ url: authUrl });
   });
 
-  // Очистка токена
   clearBtn.addEventListener("click", () => {
-    chrome.storage.local.remove(["vkToken"], () => {
-      statusText.textContent = "Token cleared";
-    });
+    chrome.storage.local.remove(["vkToken"], updateTokenStatus);
   });
 });

@@ -1,10 +1,90 @@
 <!DOCTYPE html>
-<html>
-  <body style="width: 200px; padding: 10px;">
-    <button id="auth">Auth</button>
-    <button id="clear" style="margin-top: 5px;">Clear Token</button>
-    <p id="status" style="margin-top: 10px; font-size: 14px;"></p>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подмена фотографий ВК</title>
+  <style>
+    body {
+      width: 240px;
+      padding: 16px;
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: #202123;
+      color: #ececf1;
+    }
 
-    <script src="popup.js"></script>
-  </body>
+    h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 16px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: #10a37f;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #0e8c6b;
+      transform: translateY(-1px);
+    }
+
+    .btn-error {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-error:hover:not(:disabled) {
+      background: #d83434;
+      transform: translateY(-1px);
+    }
+
+    #status {
+      margin-top: 12px;
+      font-size: 13px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .status-ok {
+      color: #22c55e;
+    }
+
+    .status-error {
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+  <h1>Замена фотографий ВК</h1>
+  <button id="auth" class="btn btn-primary">🔑 Авторизация</button>
+  <h1></h1>
+  <button id="clear" class="btn btn-error" disabled>🗑 Удалить токен</button>
+  <p id="status"></p>
+
+  <script src="popup.js"></script>
+</body>
 </html>
