@@ -56,6 +56,18 @@
   style.textContent = uploadDialogCSS;
   document.head.appendChild(style);
 
+  document.addEventListener("change", (e) => {
+  if (e.target.id === "vk-photo-input") {
+    const file = e.target.files[0];
+    if (file) {
+      const previewContainer = document.querySelector(".vk-photo-preview-container");
+      const previewImg = document.getElementById("vk-photo-preview");
+      previewImg.src = URL.createObjectURL(file);
+      previewContainer.style.display = "block";
+    }
+  }
+});
+
   const closeModal = () => {
     modal.remove();
     overlay.remove();
